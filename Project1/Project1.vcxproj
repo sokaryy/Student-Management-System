@@ -139,11 +139,13 @@
   <ItemGroup>
     <ClCompile Include="DatabaseManagerClass.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="studentclass.cpp" />
     <ClCompile Include="test_connection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DatabaseManagerClass.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="studentclass.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -93,7 +93,7 @@ std::unique_ptr<sql::ResultSet> DataBaseManager::selectAllRecords(void)
 
         unique_ptr < sql::Statement > pstatement(con->createStatement());
 
-        return unique_ptr <sql::ResultSet>(pstatement->executeQuery("SELECT * From students"));
+        return unique_ptr <sql::ResultSet>(pstatement->executeQuery("SELECT * From students order by gpa desc"));
     }
     catch (sql::SQLException& err) {
         cerr << "ERROR: Failed to Retrieve students: "  << err.what() << endl;
@@ -124,6 +124,32 @@ bool DataBaseManager::viewAllStudents(void)
     return true;
 }
 
+bool DataBaseManager::isAvailable(int id)
+{
+    if (!con)
+    {
+        cerr << "ERROR : NOT CONNECTED TO DATABASE";
+    }
+    try {
+        std::unique_ptr<sql::PreparedStatement>  pstatement(con->prepareStatement("select * from students where student_id = ?"));
+        pstatement->setInt(1, id);
+        unique_ptr<sql::ResultSet> pRS = (unique_ptr <sql::ResultSet>)pstatement->executeQuery();
+        if (pRS->next())
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    catch (sql::SQLException& err) {
+        cerr << "ERROR: Failed to Retrieve student: " << err.what() << endl;
+        return false;
+    }
+
+}
+
 bool DataBaseManager::searchByID(int id)
 {
     if (!con)
@@ -140,10 +166,12 @@ bool DataBaseManager::searchByID(int id)
                 , pRS->getString("department"), pRS->getString("graduation_date"));
             S.printHeader();
             S.printStudentInfoTabular();
+            return true;
         }
         else
         {
             cerr << "Student with ID " << id << " not found.";
+            return false;
         }
     }
     catch (sql::SQLException& err) {
@@ -152,6 +180,62 @@ bool DataBaseManager::searchByID(int id)
     }
     
 }
+
+bool DataBaseManager::updateStudent(int id, const string attribute , const string value )
+{
+    if (!con)
+    {
+        cerr << "ERROR : NOT CONNECTED TO DATABASE";
+    }
+    try 
+    {
+        string updateString = "UPDATE students set " + attribute + " = ? where student_id = ? ";
+        std::unique_ptr<sql::PreparedStatement>  pstatement(con->prepareStatement(updateString));
+        pstatement->setString(1, value);
+        pstatement->setInt(2, id);
+        int Flag = pstatement->executeUpdate();
+        
+    }
+    catch (sql::SQLException& err) {
+        cerr << "ERROR: Failed to update student: " << err.what() << endl;
+        return false;
+    }
+}
+
+bool DataBaseManager::exportToCSV(const string& filename, int count)
+{
+    unique_ptr <sql::ResultSet> pRS = selectAllRecords();
+    
+    if (!pRS)
+    {
+        return false;
+    }
+    ofstream file(filename);
+    if (!file.is_open()) {
+        cerr << "Error: Could not open file " << filename << " for writing." << endl;
+        return false;
+    }
+    
+    file << "ID,First Name,Last Name,Age,GPA,Department,Graduation Date\n";
+    while (pRS->next() && (count> 0 || count ==-1)) {
+        file << pRS->getInt("student_id") << ","
+            << pRS->getString("first_name") << ","
+            << pRS->getString("last_name") << ","
+            << pRS->getInt("age") << ","
+            << pRS->getDouble("gpa") << ","
+            << pRS->getString("department") << ","
+            << pRS->getString("graduation_date") << "\n";
+        if (count != -1)
+        {
+            count--;
+        }
+    }
+
+    file.close();
+    cout << "Report Written on File " << filename << " Correctly";
+    return true;
+}
+
 
 
 

@@ -101,11 +101,11 @@ void Student::printStudentInfo()
 void Student::printStudentInfoTabular()
 {
 	
-	const int ID_WIDTH = 15;
+	const int ID_WIDTH = 6;
 	const int AGE_WIDTH = 5;
 	const int FIRST_NAME_WIDTH = 13;
 	const int LAST_NAME_WIDTH = 12;
-	const int GPA_WIDTH = 8;
+	const int GPA_WIDTH = 5;
 	const int DEPT_WIDTH = 25;
 	const int DATE_WIDTH = 15;
 
@@ -126,11 +126,11 @@ void Student::printStudentInfoTabular()
 
 void Student::printHeader()
 {
-	const int ID_WIDTH = 15;
+	const int ID_WIDTH = 6;
 	const int AGE_WIDTH = 5;
 	const int FIRST_NAME_WIDTH = 13;
 	const int LAST_NAME_WIDTH = 12;
-	const int GPA_WIDTH = 8;
+	const int GPA_WIDTH = 5;
 	const int DEPT_WIDTH = 25;
 	const int DATE_WIDTH = 15;
 

@@ -6,7 +6,9 @@
 #include <cppconn/statement.h>
 #include <cppconn/prepared_statement.h> 
 #include <string>
+#include <fstream> 
 #include "studentclass.h"
+
 using namespace std;
 
 class DataBaseManager
@@ -25,6 +27,9 @@ public:
 	bool deleteRecord(int id);
 	std::unique_ptr<sql::ResultSet> selectAllRecords(void);
 	bool viewAllStudents(void);
+	bool isAvailable(int id);
 	bool searchByID(int id);
+	bool updateStudent(int id,const string attribute,const string value);
+	bool exportToCSV(const string& filename,int count);
 
 };
